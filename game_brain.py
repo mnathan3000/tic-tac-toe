@@ -11,6 +11,8 @@ class GameBrain:
         print(board)
 
     def reset_board(self):
+        """Returns an empty board as a dictionary"""
+
         return {"TL": 1, "TM": 2, "TR": 3,
                 "ML": 4, "MM": 5, "MR": 6,
                 "BL": 7, "BM": 8, "BR": 9}
@@ -24,6 +26,9 @@ class GameBrain:
             return "X"
 
     def human_move(self, move, board_state, turn):
+        """Tries to insert X or O into the board state dictionary. Returns True if successful and false with an error
+        message if not """
+
         try:
             if int(move) in board_state.values() and move != "X" and move != "O":
                 for (key, value) in board_state.items():
@@ -46,7 +51,7 @@ class GameBrain:
                 return False
 
     def is_win(self, board_state, turn):
-        """Returns true if someone has won the game, and prints who has won"""
+        """Returns true if someone has won the game, prints the board and who has won"""
 
         win = False
         if board_state["TL"] == board_state["TM"] == board_state["TR"]:
@@ -78,7 +83,7 @@ class GameBrain:
             return False
 
     def is_draw(self, board_state):
-        """Returns true if the game is drawn, and prints that it is a draw"""
+        """Returns true if the game is drawn, prints the board and prints that it is a draw"""
 
         draw = True
         for (key, value) in board_state.items():
@@ -94,6 +99,7 @@ class GameBrain:
             return False
 
     def game_over(self):
+
         again_input = input("Would you like to play again? (Y/N): ").upper()
         if again_input != "Y":
             return True

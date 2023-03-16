@@ -14,7 +14,7 @@ print("Welcome to Noughts and Crosses!")
 sleep(1)
 how_many_players = input("Would you like to play against the computer (C) or another human (H)? ").lower()
 
-### Game vs human ###
+### GAME VS HUMAN ###
 
 if how_many_players == "h":
     turn = choice(["X", "O"])
@@ -36,6 +36,8 @@ if how_many_players == "h":
                 turn = game_brain.change_turn(turn)
 
             game_brain.show_board(board_state)
+
+            ### CHECK IF GAME IS WON OR DRAWN ###
 
             if game_brain.is_win(board_state, turn):
                 game_on = False
@@ -59,7 +61,7 @@ if how_many_players == "h":
 
 
 
-### game vs computer ###
+### GAME VS COMPUTER ###
 
 elif how_many_players == "c":
     turn = choice(["X", "O"])
@@ -103,12 +105,17 @@ elif how_many_players == "c":
             sleep(1)
 
             while game_on:
+
+                ### HUMAN MOVE ###
+
                 if human_turn:
                     game_brain.show_board(board_state)
                     move = input(f"Where would you like to go? Type 1-9: ").upper()
                     if game_brain.human_move(move, board_state, turn):
                         turn = game_brain.change_turn(turn)
                         human_turn = False
+
+                ###COMPUTER MOVE###
 
                 else:
                     sleep(0.5)
@@ -120,6 +127,8 @@ elif how_many_players == "c":
                         board_state[computer_brain.best_move(board_state)] = turn
                     turn = game_brain.change_turn(turn)
                     human_turn = True
+
+                ### CHECK IF WIN OR DRAW ###
 
                 if game_brain.is_win(board_state, turn):
                     game_on = False

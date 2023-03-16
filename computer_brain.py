@@ -3,14 +3,18 @@ from random import choice
 
 class ComputerBrain:
 
+
     def random_move(self, board_state):
+        """RETURNS A RANDOM, VALID MOVE"""
         possible_moves = []
         for (key, value) in board_state.items():
             if isinstance(value, int):
                 possible_moves.append(key)
         return (choice(possible_moves))
 
+
     def best_move(self, bs):
+        """RETURNS THE BOARD STATE DICTIONARY KEY FOR THE BEST VALID MOVE"""
 
         ### STARTING MOVES ###
 
@@ -116,7 +120,7 @@ class ComputerBrain:
         if bs["TR"] == "O" and bs["MR"] == "O" and bs["BR"] != "X":
             return "BR"
 
-        ### STRATEGY ###
+        ### MISC SPECIFIC STRATEGY ###
 
         if bs == {"TL": "X", "TM": 2, "TR": 3, "ML": 4, "MM": "O", "MR": 6, "BL": 7, "BM": 8, "BR": 9}:
             return "BR"
@@ -169,7 +173,11 @@ class ComputerBrain:
         /                   \ 
                                 """
 
+
+
     def winning_speech(self):
+        """PRINTS ROBOT FACE AND VICTORY SPEECH"""
+
         print(self.show_robot())
         print(choice(["Well, that tick-tac-toes all the boxes",
                       "You got tic-tac-tOWNED!",
@@ -179,7 +187,10 @@ class ComputerBrain:
                       "Remember, don't ever cross me. Or nought me, for that matter.",
                       "I deserve a pat on the back. Shame that I'm just a bunch of code."]))
 
+
     def losing_speech(self):
+        """PRINTS ROBOT FACE AND DEFEAT SPEECH"""
+
         print(self.show_robot())
         print(choice(["That was Tic-Whack-Toe. I can't believe you beat me!",
                       "It was all for nought!",
@@ -190,7 +201,10 @@ class ComputerBrain:
                       "I'll tic-tac-show you!",
                       "Tic-tac-woe is me!"]))
 
+
     def drawing_speech(self):
+        """PRINTS ROBOT FACE AND DRAW SPEECH"""
+
         print(self.show_robot())
         print(choice(["Jolly good tic-tac-show! Care for another?",
                       "And they say computers can't draw. Silly humans!",
