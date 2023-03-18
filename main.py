@@ -2,6 +2,7 @@ from random import choice, randint
 from time import sleep
 from game_brain import GameBrain
 from computer_brain import ComputerBrain
+from human_vs_human import human_vs_human
 
 game_brain = GameBrain()
 computer_brain = ComputerBrain()
@@ -22,42 +23,19 @@ if how_many_players == "h":
     sleep(1)
 
     while play_again:
-        game_on = True
-        board_state = game_brain.reset_board()
+
+        winner = human_vs_human(turn, game_brain)
+        if winner is not None:
+#            print(f"{winner} is the winner")
+            if winner == "X":
+                x_points += 1
+            elif winner == "O":
+                o_points += 1
+        print(f"That makes the scores: \nX: {x_points} \nO: {o_points}")
+        if game_brain.game_over():
+            play_again = False
         turn = game_brain.change_turn(turn)
 
-        print(f"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nOK. This time, {turn} goes first!\n")
-        game_brain.show_board(board_state)
-        move = input("Where would you like to go? Type 1-9: ").upper()
-
-        while game_on:
-            print(f"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-            if game_brain.human_move(move, board_state, turn):
-                turn = game_brain.change_turn(turn)
-
-            game_brain.show_board(board_state)
-
-            ### CHECK IF GAME IS WON OR DRAWN ###
-
-            if game_brain.is_win(board_state, turn):
-                game_on = False
-                turn = game_brain.change_turn(turn)
-                if turn == "X":
-                    x_points += 1
-                elif turn == "O":
-                    o_points += 1
-                print(f"That makes the scores: \nX: {x_points} \nO: {o_points}")
-                if game_brain.game_over():
-                    play_again = False
-
-            elif game_brain.is_draw(board_state):
-                game_on = False
-                print(f"That makes the scores: \nX: {x_points} \nO: {o_points}")
-                if game_brain.game_over():
-                    play_again = False
-
-            else:
-                move = input(f"{turn}'s Turn! Where would you like to go? ").upper()
 
 
 
