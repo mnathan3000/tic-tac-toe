@@ -103,13 +103,30 @@ class GameBrain:
             return True
         return False
 
-    def add_point(self):
-        if self.turn == "X":
+    def show_scores(self):
+        print(f"The score is: \n"
+              f"X: {self.x_points} \n"
+              f"O: {self.o_points}")
+
+    def end_game(self, winner):
+        """Adds a point to the winning player (if there is one) and prints the scores"""
+        if winner == "X":
             self.x_points += 1
-        elif self.turn == "O":
+        elif winner == "O":
             self.o_points += 1
+
+        self.show_scores()
+
+
     def player_wants_to_continue(self) -> bool:
         """Asks if the player would like to play again. Returns True if yes and False if no"""
 
         user_response = input("Would you like to play again? (Y/N): ").upper()
+        return user_response == "Y"
+
+
+    def player_wants_to_change_difficulty(self) -> bool:
+        """Asks if the player would like to play again. Returns True if yes and False if no"""
+
+        user_response = input("OK, would you like to change the difficulty? (Y/N): ").upper()
         return user_response == "Y"

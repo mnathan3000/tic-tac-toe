@@ -37,21 +37,21 @@ class ComputerBrain:
             print("Too much for you, was I?")
             speech = "What difficulty would you like this time? " \
                      "Set it between 1 (easiest) and 20 (hardest): "
-            while True:
-                difficulty_input = \
-                    input(speech)
-                try:
-                    if int(difficulty_input) not in range(1, 21):
-                        sleep(1)
-                        print("That's not a number between 1 and 20! Try again. Do better.\n")
-                        sleep(2)
-                    else:
-                        self.difficulty = int(difficulty_input)
-                        return
-
-                except ValueError:
-                    print("That wasn't a number, was it? Humans are just so inferior. Try again.\n")
+        while True:
+            difficulty_input = \
+                input(speech)
+            try:
+                if int(difficulty_input) not in range(1, 21):
                     sleep(1)
+                    print("That's not a number between 1 and 20! Try again. Do better.\n")
+                    sleep(2)
+                else:
+                    self.difficulty = int(difficulty_input)
+                    return
+
+            except ValueError:
+                print("That wasn't a number, was it? Humans are just so inferior. Try again.\n")
+                sleep(1)
 
     def start_game(self, game_brain: GameBrain):
         game_brain.turn = choice(["X", "O"])
