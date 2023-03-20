@@ -1,107 +1,115 @@
 class GameBrain:
-    def show_board(self, board_state):
-        """Prints the current board state"""
 
-        board = (f"{board_state['TL']} | {board_state['TM']} | {board_state['TR']}\n"
-                 "----------\n"
-                 f"{board_state['ML']} | {board_state['MM']} | {board_state['MR']}\n"
-                 "----------\n"
-                 f"{board_state['BL']} | {board_state['BM']} | {board_state['BR']}\n")
+    def __init__(self):
 
-        print(board)
+        self.board_state = {"TL": 1, "TM": 2, "TR": 3,
+                            "ML": 4, "MM": 5, "MR": 6,
+                            "BL": 7, "BM": 8, "BR": 9}
+
+        self.turn = "X"
+        self.x_points = 0
+        self.o_points = 0
+
+    def show_board(self) -> str:
+        """Returns the current board state as a string"""
+
+        return (f"{self.board_state['TL']} | {self.board_state['TM']} | {self.board_state['TR']}\n"
+                 "----------\n"
+                 f"{self.board_state['ML']} | {self.board_state['MM']} | {self.board_state['MR']}\n"
+                 "----------\n"
+                 f"{self.board_state['BL']} | {self.board_state['BM']} | {self.board_state['BR']}\n")
 
     def reset_board(self):
         """Returns an empty board as a dictionary"""
 
-        return {"TL": 1, "TM": 2, "TR": 3,
-                "ML": 4, "MM": 5, "MR": 6,
-                "BL": 7, "BM": 8, "BR": 9}
+        self.board_state = {"TL": 1, "TM": 2, "TR": 3,
+                            "ML": 4, "MM": 5, "MR": 6,
+                            "BL": 7, "BM": 8, "BR": 9}
 
-    def change_turn(self, turn):
-        """Changes whose turn it is from X to O or vice versa"""
+    def change_turn(self):
+        """Changes whose turn it is from X to O or vice versa. Returns X or O as a string."""
 
-        if turn == "X":
-            return "O"
-        elif turn == "O":
-            return "X"
+        if self.turn == "X":
+            self.turn = "O"
+        elif self.turn == "O":
+            self.turn = "X"
 
-    def human_move(self, move, board_state, turn):
-        """Tries to insert X or O into the board state dictionary. Returns True if successful and false with an error
-        message if not """
+    def make_human_move(self, move: str):
+        """Inserts X or O into the board state dictionary at the position given by move variable"""
+
+        for (key, value) in self.board_state.items():
+            if str(value) == move:
+                self.board_state[key] = self.turn
+
+    def is_move_legal(self, move: str) -> bool:
+        """Returns True if attempted move is legal and false if it is not"""
 
         try:
-            if int(move) in board_state.values() and move != "X" and move != "O":
-                for (key, value) in board_state.items():
-                    if str(value) == move:
-                        board_state[key] = turn
-
-                        return True
+            if int(move) in self.board_state.values() and move != "X" and move != "O":
+                return True
 
             elif int(move) in range(0, 9):
                 print("That square is already taken! Try another.")
-                return False
 
         except ValueError:
             if move == "X" or move == "O":
                 print("Remember, use the corresponding letters on the board to make your move!")
-                return False
 
             else:
                 print("Did you make a typo? Try again!")
-                return False
+        return False
 
-    def is_win(self, board_state, turn):
-        """Returns true if someone has won the game, prints the board and who has won"""
+    def is_win(self) -> bool:
+        """Returns True if someone has won the game, prints the board and who has won"""
 
         win = False
-        if board_state["TL"] == board_state["TM"] == board_state["TR"]:
+        if self.board_state["TL"] == self.board_state["TM"] == self.board_state["TR"]:
             win = True
-        elif board_state["ML"] == board_state["MM"] == board_state["MR"]:
+        elif self.board_state["ML"] == self.board_state["MM"] == self.board_state["MR"]:
             win = True
-        elif board_state["BL"] == board_state["BM"] == board_state["BR"]:
+        elif self.board_state["BL"] == self.board_state["BM"] == self.board_state["BR"]:
             win = True
-        elif board_state["TL"] == board_state["ML"] == board_state["BL"]:
+        elif self.board_state["TL"] == self.board_state["ML"] == self.board_state["BL"]:
             win = True
-        elif board_state["TM"] == board_state["MM"] == board_state["BM"]:
+        elif self.board_state["TM"] == self.board_state["MM"] == self.board_state["BM"]:
             win = True
-        elif board_state["TR"] == board_state["MR"] == board_state["BR"]:
+        elif self.board_state["TR"] == self.board_state["MR"] == self.board_state["BR"]:
             win = True
-        elif board_state["TL"] == board_state["MM"] == board_state["BR"]:
+        elif self.board_state["TL"] == self.board_state["MM"] == self.board_state["BR"]:
             win = True
-        elif board_state["TR"] == board_state["MM"] == board_state["BL"]:
+        elif self.board_state["TR"] == self.board_state["MM"] == self.board_state["BL"]:
             win = True
 
         if win:
-            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-            self.show_board(board_state)
-            turn = self.change_turn(turn)
-            print(f"Game over! {turn} is the winner!")
+            print("\n" * 15)
+            print(self.show_board())
+            self.change_turn()
+            print(f"Game over! {self.turn} is the winner!")
 
             return True
+        return False
 
-        else:
-            return False
-
-    def is_draw(self, board_state):
+    def is_draw(self) -> bool:
         """Returns true if the game is drawn, prints the board and prints that it is a draw"""
 
         draw = True
-        for (key, value) in board_state.items():
+        for (key, value) in self.board_state.items():
             if isinstance(value, int):
                 draw = False
         if draw:
-            print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-            self.show_board(board_state)
+            print("\n" * 20)
+            print(self.show_board())
             print(f"Game over! It's a draw!")
             return True
+        return False
 
-        else:
-            return False
+    def add_point(self):
+        if self.turn == "X":
+            self.x_points += 1
+        elif self.turn == "O":
+            self.o_points += 1
+    def player_wants_to_continue(self) -> bool:
+        """Asks if the player would like to play again. Returns True if yes and False if no"""
 
-    def game_over(self):
-
-        again_input = input("Would you like to play again? (Y/N): ").upper()
-        if again_input != "Y":
-            return True
-        else:
-            return False
+        user_response = input("Would you like to play again? (Y/N): ").upper()
+        return user_response == "Y"

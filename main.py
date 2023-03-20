@@ -1,147 +1,66 @@
-from random import choice, randint
+from random import choice
 from time import sleep
 from game_brain import GameBrain
 from computer_brain import ComputerBrain
 from human_vs_human import human_vs_human
+from human_vs_computer import human_vs_computer
 
 game_brain = GameBrain()
 computer_brain = ComputerBrain()
 
-play_again = True
-x_points = 0
-o_points = 0
-
 print("Welcome to Noughts and Crosses!")
 sleep(1)
-how_many_players = input("Would you like to play against the computer (C) or another human (H)? ").lower()
+how_many_players = input("Would you like to play against the computer (C) or another human (H)? ").upper()
 
-### GAME VS HUMAN ###
+# Game vs human
 
-if how_many_players == "h":
-    turn = choice(["X", "O"])
+if how_many_players == "H":
+    game_brain.turn = choice(["X", "O"])
     print("Decide who's going to be noughts and who's going to be crosses. You have 5 seconds.\n")
-    sleep(1)
+    sleep(5)
 
-    while play_again:
+    while True:
 
-        winner = human_vs_human(turn, game_brain)
+        winner = human_vs_human(game_brain)
+
         if winner is not None:
-#            print(f"{winner} is the winner")
-            if winner == "X":
-                x_points += 1
-            elif winner == "O":
-                o_points += 1
-        print(f"That makes the scores: \nX: {x_points} \nO: {o_points}")
-        if game_brain.game_over():
-            play_again = False
-        turn = game_brain.change_turn(turn)
+            game_brain.add_point()
+        print(f"That makes the scores: \n"
+              f"X: {game_brain.x_points} \n"
+              f"O: {game_brain.o_points}")
 
+        if not game_brain.player_wants_to_continue():
+            break
 
+# Game vs computer
 
+elif how_many_players == "C":
 
-### GAME VS COMPUTER ###
+    computer_brain.start_game(game_brain)
 
-elif how_many_players == "c":
-    turn = choice(["X", "O"])
-    print(computer_brain.show_robot())
-    print("Bleep blorp. I am the Tic-Tac-Tobot 3000.\n")
-    sleep(1)
-    print("No human can equal my Tic-Tac-Total mastery of this game.\n")
-    sleep(2)
+    while True:
 
-    difficulty_set = True
+        winner = human_vs_computer(game_brain, computer_brain)
 
-    while difficulty_set:
+        if winner is not None:
+            game_brain.add_point()
+        print(f"That makes the scores: \n"
+              f"X: {game_brain.x_points} \n"
+              f"O: {game_brain.o_points}")
 
-        difficulty = input("Please set my difficulty level between 1 (easiest) and 20 (hardest): ")
-        if int(difficulty) not in range(1, 21):
-            sleep(1)
-            print("That's not a number between 1 and 20! Clearly you're not so smart - I'll set the difficulty to 1.")
-            sleep(2)
-            difficulty = 1
-        difficulty = int(difficulty)
-
-        print("\nI'll play as X and you play as O.")
-        sleep(1)
-
-        play_again = True
-
-        while play_again:
-
-            board_state = game_brain.reset_board()
-
-            game_on = True
-
-            if turn == "O":
-                print("\nYou go first this time.\n")
-                human_turn = True
-
+        if game_brain.player_wants_to_continue():
+            player_wants_to_change_difficulty = \
+                input("OK, would you like to change the difficulty? (Y/N): ").upper()
+            if player_wants_to_change_difficulty == "Y":
+                computer_brain.set_difficulty()
             else:
-                print("\nI'll go first this time.\n")
-                human_turn = False
+                continue
 
-            sleep(1)
-
-            while game_on:
-
-                ### HUMAN MOVE ###
-
-                if human_turn:
-                    game_brain.show_board(board_state)
-                    move = input(f"Where would you like to go? Type 1-9: ").upper()
-                    if game_brain.human_move(move, board_state, turn):
-                        turn = game_brain.change_turn(turn)
-                        human_turn = False
-
-                ###COMPUTER MOVE###
-
-                else:
-                    sleep(0.5)
-                    print("\n\nTic-Tac-Tobot 3000's turn:")
-                    makes_random_move = randint(1, difficulty)
-                    if makes_random_move == difficulty:
-                        board_state[computer_brain.random_move(board_state)] = turn
-                    else:
-                        board_state[computer_brain.best_move(board_state)] = turn
-                    turn = game_brain.change_turn(turn)
-                    human_turn = True
-
-                ### CHECK IF WIN OR DRAW ###
-
-                if game_brain.is_win(board_state, turn):
-                    game_on = False
-                    turn = game_brain.change_turn(turn)
-                    if turn == "X":
-                        x_points += 1
-                        computer_brain.winning_speech()
-                    elif turn == "O":
-                        o_points += 1
-                        computer_brain.losing_speech()
-                    print(f"That makes the scores: \nX: {x_points} \nO: {o_points}")
-
-                    turn = game_brain.change_turn(turn)
-                    if game_brain.game_over():
-                        play_again = False
-                        difficulty_set = False
-                    else:
-                        change_difficulty = input("Would you like to change difficulty? (Y/N): ").upper()
-                        if change_difficulty == "Y":
-                            play_again = False
+        else:
+            break
 
 
 
-                elif game_brain.is_draw(board_state):
-                    game_on = False
-                    computer_brain.drawing_speech()
-                    print(f"That makes the scores: \nX: {x_points} \nO: {o_points}")
-                    game_brain.change_turn(turn)
-                    if game_brain.game_over():
-                        play_again = False
-                        difficulty_set = False
-                    else:
-                        change_difficulty = input("Would you like to change difficulty? (Y/N): ").upper()
-                        if change_difficulty == "Y":
-                            play_again = False
 
 else:
     print("That wasn't a C or an H! You don't deserve to play Noughts and Crosses.")
